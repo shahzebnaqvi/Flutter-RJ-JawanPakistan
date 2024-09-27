@@ -1,3 +1,4 @@
+import 'package:containerapp/screens/bottom_nav_screen.dart';
 import 'package:containerapp/screens/home_screen.dart';
 import 'package:containerapp/screens/todo_screen.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +16,14 @@ class LoginScreen extends StatelessWidget {
     //         builder: (context) => HomeScreen(
     //               email: emailControl.text,
     //             )));
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //         builder: (context) => TodoScreen(
+    //               email: emailControl.text,
+    //             )));
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TodoScreen(
-                  email: emailControl.text,
-                )));
+        context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
     // emailControl.clear();
   }
 
