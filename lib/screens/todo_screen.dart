@@ -1,6 +1,7 @@
 import 'package:containerapp/widgets/product_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class TodoScreen extends StatefulWidget {
   String email;
@@ -12,107 +13,192 @@ class TodoScreen extends StatefulWidget {
 }
 
 class _TodoScreenState extends State<TodoScreen> {
-  int counter = 0;
-  List todo_Title = ["class", "job", "lunch"];
-  TextEditingController todotitle = TextEditingController();
-  bool addedit = false;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  List<Map<String, String>> todoTaskList = [
+    {
+      "title": "Lunch",
+      "description": "Lunch done by me",
+    }
+  ];
+  TextEditingController titleControl = TextEditingController();
+  TextEditingController descripControl = TextEditingController();
+  bool isEdit = false;
+  int editIndexNo = 0;
+  clearAllField() {
+    titleControl.clear();
+    descripControl.clear();
+  }
+
+  addTodo() {
+    if (titleControl.text != "" && descripControl.text != "") {
+      setState(() {
+        todoTaskList.add(
+            {"title": titleControl.text, "description": descripControl.text});
+      });
+      clearAllField();
+    }
+  }
+
+  deleteTodo(indexNo) {
+    todoTaskList.removeAt(indexNo);
+    setState(() {});
+  }
+
+  editTodo(indexNo, titleValue, descripValue) {
+    setState(() {
+      isEdit = true;
+      editIndexNo = indexNo;
+    });
+    print("$indexNo, $titleValue, $descripValue");
+    titleControl.text = titleValue;
+    descripControl.text = descripValue;
+  }
+
+  cancelTodo() {
+    setState(() {
+      isEdit = false;
+    });
+    clearAllField();
+  }
+
+  updateTodo() {
+    todoTaskList[editIndexNo] = {
+      "title": titleControl.text,
+      "description": descripControl.text
+    };
+    setState(() {});
+    cancelTodo();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("object;");
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Todo Screen"),
+      ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: Column(
-            children: [
-              // Container(
-              //   height: 700,
-              //   child: ListView.builder(
-              //       itemCount: todo_Title.length,
-              //       itemBuilder: (context, ind) {
-              //         return ProductWidget(productPrice: "${todo_Title[ind]}");
-              //       }),
-              // ),
-              // Expanded(
-              //   child: ListView.builder(
-              //       itemCount: todo_Title.length,
-              //       itemBuilder: (context, ind) {
-              //         return ProductWidget(productPrice: "${todo_Title[ind]}");
-              //       }),
-              // ),
-              // Expanded(
-              //   child: ListView.builder(
-              //       itemCount: todo_Title.length,
-              //       itemBuilder: (context, ind) {
-              //         return ProductWidget(productPrice: "${todo_Title[ind]}");
-              //       }),
-              // ),
-              // Text("data"),
-              // Text("data"),
-              // Text("data"),
-              // Text("data"),
-              Row(
-                children: [
-                  Container(
+        child: Column(
+          children: [
+            // Container(
+            //   height: 100,
+            //   child: ListView.builder(
+            //     itemCount: 10,
+            //     itemBuilder: (context, index) => Text("data"),
+            //   ),
+            // ),
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: 10,
+            //     itemBuilder: (context, index) => Text("data"),
+            //   ),
+            // ),
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemCount: 10,
+            //     itemBuilder: (context, index) => Text("data"),
+            //   ),
+            // ),
+            // Text("data")
+            // ListView.builder(
+            //   physics: NeverScrollableScrollPhysics(),
+            //   shrinkWrap: true,
+            //   itemCount: 100,
+            //   itemBuilder: (context, index) => Text("data"),
+            // ),
+            TextField(
+              controller: titleControl,
+              decoration: InputDecoration(hintText: "title"),
+            ),
+            TextField(
+              controller: descripControl,
+              decoration: InputDecoration(hintText: "Description"),
+            ),
+
+            isEdit
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 100,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            updateTodo();
+                          },
+                          child: Text("Update"),
+                        ),
+                      ),
+                      Container(
+                        width: 100,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            cancelTodo();
+                          },
+                          child: Text("Cancel"),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(
                     width: 300,
-                    child: TextField(
-                      decoration: InputDecoration(
-                          label: Text("Todo"), hintText: "Task"),
-                      controller: todotitle,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        addTodo();
+                      },
+                      child: Text("Add"),
                     ),
                   ),
-                  addedit
-                      ? ElevatedButton(
-                          child: Text("Add"),
-                          onPressed: () {
-                            if (todotitle.text != "") {
-                              todo_Title.add("${todotitle.text}");
-                              print(todo_Title);
-                              setState(() {});
-                            } else {
-                              print("Empty todo task ");
-                            }
-                          },
-                        )
-                      : ElevatedButton(
-                          child: Text("Edit"),
-                          onPressed: () {
-                            if (todotitle.text != "") {
-                              setState(() {});
-                            } else {
-                              print("Empty todo task ");
-                            }
-                          },
-                        )
-                ],
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: todoTaskList.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text("${todoTaskList[index]['title']}"),
+                subtitle: Text("${todoTaskList[index]['description']}"),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          editTodo(index, todoTaskList[index]['title'],
+                              todoTaskList[index]['description']);
+                        },
+                        icon: Icon(Icons.edit)),
+                    IconButton(
+                        onPressed: () {
+                          deleteTodo(index);
+                        },
+                        icon: Icon(Icons.delete))
+                  ],
+                ),
               ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: todo_Title.length,
-                  itemBuilder: (context, ind) {
-                    return InkWell(
-                      child: ProductWidget(productPrice: "${todo_Title[ind]}"),
-                      onTap: () {
-                        addedit = !addedit;
-                        setState(() {});
-                      },
-                    );
-                  }),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {});
-          counter++;
-          print(counter);
-        },
-        child: Icon(Icons.add),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
 // class TodoScreen extends StatelessWidget {
 //   String email;
 
