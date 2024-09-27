@@ -1,3 +1,4 @@
+import 'package:containerapp/screens/animated_bottom_screen.dart';
 import 'package:containerapp/screens/bottom_nav_screen.dart';
 import 'package:containerapp/screens/home_screen.dart';
 import 'package:containerapp/screens/todo_screen.dart';
@@ -22,8 +23,8 @@ class LoginScreen extends StatelessWidget {
     //         builder: (context) => TodoScreen(
     //               email: emailControl.text,
     //             )));
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => AnimatedBottomScreen()));
     // emailControl.clear();
   }
 
