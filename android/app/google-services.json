@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "208590462719",
+    "project_id": "medical-jp",
+    "storage_bucket": "medical-jp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208590462719:android:0ad69fe80427a9bc2e36ca",
+        "android_client_info": {
+          "package_name": "com.abd.medicaljp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhF80KphQjqkxJMb9j5AUmmDJG_Dkjkw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
