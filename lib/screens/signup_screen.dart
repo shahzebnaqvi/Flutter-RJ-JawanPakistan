@@ -1,25 +1,20 @@
 import 'package:containerapp/screens/animated_bottom_screen.dart';
-import 'package:containerapp/screens/bottom_nav_screen.dart';
-import 'package:containerapp/screens/home_screen.dart';
-import 'package:containerapp/screens/signup_screen.dart';
-import 'package:containerapp/screens/todo_screen.dart';
+import 'package:containerapp/utils/font_contraints.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   TextEditingController emailControl = TextEditingController();
 
   TextEditingController passwordControl = TextEditingController();
-
   bool isloading = false;
-
   loginFunc(context) async {
     print("hello world");
     print(emailControl.text);
@@ -31,49 +26,34 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       var firbaseinstance = FirebaseAuth.instance;
       UserCredential credential =
-          await firbaseinstance.signInWithEmailAndPassword(
+          await firbaseinstance.createUserWithEmailAndPassword(
         email: emailControl.text,
         password: passwordControl.text,
       );
       var snackBar = SnackBar(
-        content: Text('The account is login ${credential.user!}'),
+        content: Text('The account is created'),
       );
       setState(() {
         isloading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  AnimatedBottomScreen(userdetail: credential)));
+      Navigator.pop(context);
       print("this is my signup output ${credential.user!.email}");
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email');
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
         var snackBar = SnackBar(
-          content: Text('No user found for that email'),
+          content: Text('The password provided is too weak.'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
         setState(() {
           isloading = false;
         });
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
         var snackBar = SnackBar(
-          content: Text('Wrong password provided for that user.'),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-        setState(() {
-          isloading = false;
-        });
-      } else if (e.code == 'invalid-credential') {
-        print('Wrong password provided for that user.');
-        var snackBar = SnackBar(
-          content: Text('User not exist.'),
+          content: Text('The account already exists for this email.'),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
@@ -101,12 +81,20 @@ class _LoginScreenState extends State<LoginScreen> {
         isloading = false;
       });
     }
-
+    // Navigator.push(context,
+    //     MaterialPageRoute(builder: (context) => AnimatedBottomScreen()));
     // emailControl.clear();
   }
 
   getPassword(passwordGet) {
     print("this is my text 2032 ${passwordGet}");
+  }
+
+  @override
+  void initState() {
+    emailControl.text = "shahzeb.naqvi12@gmail.com";
+    passwordControl.text = "12345678";
+    super.initState();
   }
 
   @override
@@ -126,6 +114,10 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           child: Column(
             children: [
+              Text(
+                "Signup ",
+                style: TextStyle(fontSize: FontConstraints.headingSize),
+              ),
               TextField(
                 controller: emailControl,
                 decoration: InputDecoration(label: Text("Email")),
@@ -147,20 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         loginFunc(context);
                       },
                       child: Text("Login"),
-                    ),
-              Row(
-                children: [
-                  Text("Did not have account?"),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignupScreen()));
-                      },
-                      child: Text("Sign up"))
-                ],
-              )
+                    )
             ],
           ),
         ),

@@ -1,8 +1,10 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedBottomScreen extends StatefulWidget {
-  const AnimatedBottomScreen({super.key});
+  UserCredential userdetail;
+  AnimatedBottomScreen({super.key, required this.userdetail});
 
   @override
   State<AnimatedBottomScreen> createState() => _AnimatedBottomScreenState();
@@ -19,6 +21,22 @@ class _AnimatedBottomScreenState extends State<AnimatedBottomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Center(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 200,
+            ),
+            Text("${widget.userdetail.user!.email}"),
+            Text("${widget.userdetail.user!.uid}"),
+            ElevatedButton(
+                onPressed: () async {
+                  var signOut = await FirebaseAuth.instance.signOut();
+                },
+                child: Text("Signout"))
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         //params
