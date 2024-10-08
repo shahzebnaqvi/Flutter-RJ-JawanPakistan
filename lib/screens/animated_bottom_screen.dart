@@ -1,6 +1,7 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AnimatedBottomScreen extends StatefulWidget {
   UserCredential userdetail;
@@ -18,23 +19,76 @@ class _AnimatedBottomScreenState extends State<AnimatedBottomScreen> {
     Icons.brightness_7,
   ];
   int _bottomNavIndex = 0;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  List productsData = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 200,
-            ),
-            Text("${widget.userdetail.user!.email}"),
-            Text("${widget.userdetail.user!.uid}"),
-            ElevatedButton(
-                onPressed: () async {
-                  var signOut = await FirebaseAuth.instance.signOut();
-                },
-                child: Text("Signout"))
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: () async {
+                    Map<String, dynamic> productData = {
+                      "id": 1,
+                      "productname": "watch",
+                      "productcat": "a",
+                      "productprice": 20,
+                      "productimage": "abc"
+                    };
+                    await firestore.collection("Products").add(productData);
+                  },
+                  child: Text("Add Product")),
+              ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: productsData.length,
+                itemBuilder: (context, index) => ListTile(
+                  title: Text("${productsData[index]["productname"] ?? ''}"),
+                  subtitle: Text("${productsData[index]['productprice']}"),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            // editTodo(index, todoTaskList[index]['title'],
+                            //     todoTaskList[index]['description']);
+                          },
+                          icon: Icon(Icons.edit)),
+                      IconButton(
+                          onPressed: () {
+                            // deleteTodo(index);
+                          },
+                          icon: Icon(Icons.delete))
+                    ],
+                  ),
+                ),
+              ),
+              // Crud Create read update delete
+
+              ElevatedButton(
+                  onPressed: () async {
+                    var products = await firestore.collection("Products").get();
+                    print(products.docs);
+                    setState(() {
+                      productsData = products.docs;
+                    });
+                  },
+                  child: Text("Get Product"))
+              // SizedBox(
+              //   height: 200,
+              // ),
+              // Text("${widget.userdetail.user!.email}"),
+              // Text("${widget.userdetail.user!.uid}"),
+              // ElevatedButton(
+              //     onPressed: () async {
+              //       var signOut = await FirebaseAuth.instance.signOut();
+              //     },
+              //     child: Text("Signout"))
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
