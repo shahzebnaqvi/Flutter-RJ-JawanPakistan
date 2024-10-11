@@ -76,7 +76,7 @@ class _AnimatedBottomScreenState extends State<AnimatedBottomScreen> {
                       productsData = products.docs;
                     });
                   },
-                  child: Text("Get Product"))
+                  child: Text("Get  Product"))
               // SizedBox(
               //   height: 200,
               // ),
