@@ -43,11 +43,17 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  AnimatedBottomScreen(userdetail: credential)));
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) =>
+      //             AnimatedBottomScreen(userdetail: credential)));
+
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) =>
+      //             AnimatedBottomScreen(userdetail: credential)));
       print("this is my signup output ${credential.user!.email}");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
