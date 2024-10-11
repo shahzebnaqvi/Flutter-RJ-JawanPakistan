@@ -19,13 +19,9 @@ class _TodoScreenFirebaseState extends State<TodoScreenFirebase> {
   }
 
   @override
-  void initState() async {
+  void initState() {
     // TODO: implement initState
-    var task = await getTask();
-    print(task.docs);
-    setState(() {
-      taskList = task.docs;
-    });
+
     super.initState();
   }
 
@@ -44,53 +40,69 @@ class _TodoScreenFirebaseState extends State<TodoScreenFirebase> {
                     });
                   },
                   child: Icon(Icons.refresh)),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: taskList.length,
-                  itemBuilder: (context, index) => ListTile(
-                    title: Text("${taskList[index]["TaskName"]}"),
-                    leading: Text("abc"),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GestureDetector(
-                            onTap: () async {
-                              print("${taskList[index]["TaskName"]}");
-                              print("${taskList[index].id}");
-                              firestore
-                                  .collection("Task")
-                                  .doc("${taskList[index].id}")
-                                  .update({
-                                "TaskName": "YAseen",
-                                "Priorty": "High"
-                              });
-                              var task = await getTask();
-                              print(task.docs);
-                              setState(() {
-                                taskList = task.docs;
-                              });
-                            },
-                            child: Icon(Icons.edit)),
-                        GestureDetector(
-                            onTap: () async {
-                              print("${taskList[index]["TaskName"]}");
-                              print("${taskList[index].id}");
-                              firestore
-                                  .collection("Task")
-                                  .doc("${taskList[index].id}")
-                                  .delete();
-                              var task = await getTask();
-                              print(task.docs);
-                              setState(() {
-                                taskList = task.docs;
-                              });
-                            },
-                            child: Icon(Icons.delete)),
-                      ],
-                    ),
-                  ),
-                ),
+              FutureBuilder(
+                future: getTask(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  // return Text("HEllo");
+                  if (snapshot.hasData) {
+                    return Text("${snapshot.data.docs[0]["TaskName"]}");
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Text("waiting");
+                  } else if (snapshot.hasError) {
+                    return Text("Error is here");
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
               )
+              // Expanded(
+              //   child: ListView.builder(
+              //     itemCount: taskList.length,
+              //     itemBuilder: (context, index) => ListTile(
+              //       title: Text("${taskList[index]["TaskName"]}"),
+              //       leading: Text("abc"),
+              //       trailing: Row(
+              //         mainAxisSize: MainAxisSize.min,
+              //         children: [
+              //           GestureDetector(
+              //               onTap: () async {
+              //                 print("${taskList[index]["TaskName"]}");
+              //                 print("${taskList[index].id}");
+              //                 firestore
+              //                     .collection("Task")
+              //                     .doc("${taskList[index].id}")
+              //                     .update({
+              //                   "TaskName": "YAseen",
+              //                   "Priorty": "High"
+              //                 });
+              //                 var task = await getTask();
+              //                 print(task.docs);
+              //                 setState(() {
+              //                   taskList = task.docs;
+              //                 });
+              //               },
+              //               child: Icon(Icons.edit)),
+              //           GestureDetector(
+              //               onTap: () async {
+              //                 print("${taskList[index]["TaskName"]}");
+              //                 print("${taskList[index].id}");
+              //                 firestore
+              //                     .collection("Task")
+              //                     .doc("${taskList[index].id}")
+              //                     .delete();
+              //                 var task = await getTask();
+              //                 print(task.docs);
+              //                 setState(() {
+              //                   taskList = task.docs;
+              //                 });
+              //               },
+              //               child: Icon(Icons.delete)),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // )
             ],
           ),
           floatingActionButton: FloatingActionButton(

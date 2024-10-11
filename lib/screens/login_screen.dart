@@ -3,6 +3,7 @@ import 'package:containerapp/screens/bottom_nav_screen.dart';
 import 'package:containerapp/screens/home_screen.dart';
 import 'package:containerapp/screens/signup_screen.dart';
 import 'package:containerapp/screens/todo_screen.dart';
+import 'package:containerapp/screens/todo_screen_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -49,11 +50,6 @@ class _LoginScreenState extends State<LoginScreen> {
       //         builder: (context) =>
       //             AnimatedBottomScreen(userdetail: credential)));
 
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) =>
-      //             AnimatedBottomScreen(userdetail: credential)));
       print("this is my signup output ${credential.user!.email}");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -150,7 +146,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ? CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: () {
-                        loginFunc(context);
+                        // loginFunc(context);
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TodoScreenFirebase()));
                       },
                       child: Text("Login"),
                     ),
