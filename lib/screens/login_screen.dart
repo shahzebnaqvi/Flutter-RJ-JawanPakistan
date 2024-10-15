@@ -1,6 +1,7 @@
 import 'package:containerapp/screens/animated_bottom_screen.dart';
 import 'package:containerapp/screens/bottom_nav_screen.dart';
 import 'package:containerapp/screens/home_screen.dart';
+import 'package:containerapp/screens/saving_picture_screen.dart';
 import 'package:containerapp/screens/signup_screen.dart';
 import 'package:containerapp/screens/todo_screen.dart';
 import 'package:containerapp/screens/todo_screen_firebase.dart';
@@ -151,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TodoScreenFirebase()));
+                                builder: (context) => SavingPictureScreen()));
                       },
                       child: Text("Login"),
                     ),
