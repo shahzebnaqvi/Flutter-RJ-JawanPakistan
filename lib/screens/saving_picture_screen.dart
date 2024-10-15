@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,8 @@ class _SavingPictureScreenState extends State<SavingPictureScreen> {
       final storageRef = FirebaseStorage.instance.ref();
       final mountainImagesRef = storageRef.child("images/product_${date}.jpg");
       await mountainImagesRef.putFile(file);
+      var imageurl = await mountainImagesRef.getDownloadURL();
+      print("abc $imageurl");
     } catch (e) {
       print("this is error $e");
     }
