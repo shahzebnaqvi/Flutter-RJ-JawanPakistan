@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-
 class OTPScreen extends StatefulWidget {
   @override
   _OTPScreenState createState() => _OTPScreenState();
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  final List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
+  final List<TextEditingController> _controllers =
+      List.generate(8, (index) => TextEditingController());
   int currentIndex = 0;
 
   void _handleTextChanged(String value, int index) {
     if (value.length == 1) {
-      if (index < 3) {
+      if (index < 7) {
         FocusScope.of(context).nextFocus();
       }
     } else if (value.isEmpty && index > 0) {
@@ -38,25 +38,28 @@ class _OTPScreenState extends State<OTPScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(4, (index) {
-                  return SizedBox(
-                    width: 50,
-                    child: TextField(
-                      controller: _controllers[index],
-                      onChanged: (value) => _handleTextChanged(value, index),
-                      textAlign: TextAlign.center,
-                      maxLength: 1,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        counterText: '',
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: List.generate(8, (index) {
+                    return SizedBox(
+                      width: 50,
+                      child: TextField(
+                        controller: _controllers[index],
+                        onChanged: (value) => _handleTextChanged(value, index),
+                        textAlign: TextAlign.center,
+                        maxLength: 1,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          counterText: '',
+                        ),
+                        keyboardType: TextInputType.number,
+                        autofocus: index == 0,
                       ),
-                      keyboardType: TextInputType.number,
-                      autofocus: index == 0,
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
               SizedBox(height: 20),
               ElevatedButton(
