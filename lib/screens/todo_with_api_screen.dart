@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:containerapp/models/todo_response_model.dart';
+import 'package:containerapp/models/user_response_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,7 +15,7 @@ class TodoWithApiScreen extends StatefulWidget {
 }
 
 class _TodoWithApiScreenState extends State<TodoWithApiScreen> {
-  List todos = [];
+  List<TodosResponseModel> todos = [];
   getData() async {
     String baseUrl = "https://jsonplaceholder.typicode.com/todos";
     Uri url = Uri.parse(baseUrl);
@@ -21,7 +23,50 @@ class _TodoWithApiScreenState extends State<TodoWithApiScreen> {
     // print(abc.body[0]);
     if (responseTodo.statusCode == 200) {
       setState(() {
-        todos = jsonDecode(responseTodo.body);
+        // todos = jsonDecode(responseTodo.body);
+
+        for (var a in jsonDecode(responseTodo.body)) {
+          todos.add(TodosResponseModel.fromJson(a));
+          print("i am getting data $a");
+        }
+      });
+      print(todos[0]);
+    } else {
+      print("something went wrong");
+    }
+  }
+
+  List<UserResponseModel> users = [];
+  getusersData() async {
+    String baseUrl = "https://jsonplaceholder.typicode.com/users";
+    Uri url = Uri.parse(baseUrl);
+    http.Response responseTodo = await http.get(url);
+    // print(abc.body[0]);
+    if (responseTodo.statusCode == 200) {
+      setState(() {
+        // todos = jsonDecode(responseTodo.body);
+
+        for (var a in jsonDecode(responseTodo.body)) {
+          users.add(UserResponseModel.fromJson(a));
+          print("i am getting data $a");
+        }
+      });
+      print(todos[0]);
+    } else {
+      print("something went wrong");
+    }
+  }
+
+  UserResponseModel usersdata1 = UserResponseModel();
+  getusers1Data(nouser) async {
+    String baseUrl = "https://jsonplaceholder.typicode.com/users/$nouser";
+    Uri url = Uri.parse(baseUrl);
+    http.Response responseTodo = await http.get(url);
+    // print(abc.body[0]);
+    if (responseTodo.statusCode == 200) {
+      setState(() {
+        // todos = jsonDecode(responseTodo.body);
+        usersdata1 = UserResponseModel.fromJson(jsonDecode(responseTodo.body));
       });
       print(todos[0]);
     } else {
@@ -31,6 +76,7 @@ class _TodoWithApiScreenState extends State<TodoWithApiScreen> {
 
   postData(endpoint) async {
     String baseUrl = "https://jsonplaceholder.typicode.com$endpoint";
+    var headers = {'Content-Type': 'application/json'};
     var datapost = {
       "userId": 1,
       "id": 1,
@@ -41,7 +87,7 @@ class _TodoWithApiScreenState extends State<TodoWithApiScreen> {
     };
     Uri url = Uri.parse(baseUrl);
     http.Response responseTodo =
-        await http.post(url, body: jsonEncode(datapost));
+        await http.post(url, headers: headers, body: jsonEncode(datapost));
     // print(abc.body[0]);
     if (responseTodo.statusCode == 201) {
       setState(() {
@@ -59,22 +105,27 @@ class _TodoWithApiScreenState extends State<TodoWithApiScreen> {
     return Scaffold(
       body: Column(
         children: [
+          SizedBox(
+            height: 20,
+          ),
           ElevatedButton(
               onPressed: () {
-                getData();
+                getusersData();
               },
               child: Text("data")),
           ElevatedButton(
               onPressed: () {
-                postData("/posts");
+                // postData("/posts");
+                getusers1Data(1);
               },
               child: Text("Post")),
+          Text("${usersdata1}"),
           Expanded(
             child: ListView.builder(
-              itemCount: todos.length,
+              itemCount: users.length,
               itemBuilder: (context, i) {
                 return ListTile(
-                  title: Text("${todos[i]["title"]}"),
+                  title: Text(users[i].address!.geo!.lat ?? "Not found"),
                 );
               },
             ),
